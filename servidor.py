@@ -52,3 +52,27 @@ def enviar_mensagem_privada(target_username, message, sender):
                 break
             except:
                 remove_client(client)
+
+def remove_client(client_socket):
+    if client_socket in clients:
+        clients.remove(client_socket)
+        username = usernames.pop(client_socket, "Desconhecido")
+        print(f"{username} desconectado.")
+        client_socket.close()
+
+
+def start_server():
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind((HOST, PORT))
+    server_socket.listen()
+    print(f"Servidor rodando em {HOST}:{PORT}...")
+
+    while True:
+        client_socket, client_address = server_socket.accept()
+        clients.append(client_socket)
+        client_socket.send("Bem-vindo ao chat! Por favor, insira seu nome.".encode('utf-8'))
+        
+        thread = threading.Thread(target=gerenciamento_cliente, args=(client_socket,))
+        thread.start()
+
+start_server()

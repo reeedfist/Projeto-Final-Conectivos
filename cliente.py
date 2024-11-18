@@ -48,3 +48,40 @@ def connect_to_server():
             messagebox.showerror("Erro", "Nome de usuário não pode estar vazio.")
     except Exception as e:
         messagebox.showerror("Erro", f"Falha ao conectar ao servidor: {e}")
+
+
+def start_gui_chat():
+    thread = threading.Thread(target=receive_messages)
+    thread.start()
+
+    main_frame.pack(pady=10)
+    input_frame.pack(pady=5)
+    msg_entry.focus()
+
+
+app = tk.Tk()
+app.title("Chat")
+app.geometry("400x400")
+
+
+username_frame = tk.Frame(app)
+username_frame.pack(pady=10)
+
+tk.Label(username_frame, text="Nome de usuário:").pack(side=tk.LEFT)
+username_entry = tk.Entry(username_frame)
+username_entry.pack(side=tk.LEFT)
+connect_button = tk.Button(username_frame, text="Conectar", command=connect_to_server)
+connect_button.pack(side=tk.LEFT)
+
+
+main_frame = tk.Frame(app)
+chat_window = scrolledtext.ScrolledText(main_frame, width=50, height=15, state=tk.DISABLED)
+chat_window.pack(pady=5)
+
+input_frame = tk.Frame(app)
+msg_entry = tk.Entry(input_frame, width=40)
+msg_entry.pack(side=tk.LEFT, padx=5)
+send_button = tk.Button(input_frame, text="Enviar", command=send_message)
+send_button.pack(side=tk.LEFT)
+
+app.mainloop()
